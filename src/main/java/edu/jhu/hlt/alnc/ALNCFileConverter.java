@@ -10,14 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class that can be used to convert ALNC files to {@link ALNCArticleBean} objects. 
- * <br/>
- * <br/>
+ * <br>
+ * <br>
  * Each file, as of 2015/2/23, contain one JSON object per line.
  */
 public class ALNCFileConverter implements AutoCloseable {
@@ -36,16 +38,20 @@ public class ALNCFileConverter implements AutoCloseable {
   public ALNCFileConverter(InputStream is) {
     this.is = is;
     this.isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-    this.br = new BufferedReader(this.isr);
+    this.br = new BufferedReader(this.isr, 1024 * 8 * 8 * 4);
+  }
+  
+  public ALNCFileConverter(Path path) throws IOException {
+    this(Files.newInputStream(path));
   }
   
   /**
    * Return a {@link Stream} of {@link ALNCArticleBean} objects. This stream should be
    * closed when processing is complete.
-   * <br/>
-   * <br/>
-   * Warning: while unlikely, this method can throw an unchecked exception. This will
-   * most likely occur when the underlying InputStream does not represent ALNC JSON data.
+   * <br>
+   * <br>
+   * This method can throw an unchecked exception. This will
+   * occur when the underlying InputStream does not represent ALNC JSON data.
    * 
    * @return a {@link Stream} of {@link ALNCArticleBean} objects.
    * @throws IOException if there is an issue reading the underlying archive.

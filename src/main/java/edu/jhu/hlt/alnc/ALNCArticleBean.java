@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Class representing a bean for a NewsArticle object. This is the basic element of the ALNC corpus.
- * <br/>
- * <br/>
+ * <br>
+ * <br>
  * This class is an implementation of the Jackson ObjectMapping protocol. 
  */
 public class ALNCArticleBean {
@@ -116,5 +116,16 @@ public class ALNCArticleBean {
    */
   public void setArticleNumber(int articleNumber) {
     this.articleNumber = articleNumber;
+  }
+  
+  /**
+   * @return a canonical 'id' for this {@link ALNCArticleBean}
+   */
+  public final String extractId() {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(this.getDomain());
+    sb.append("_");
+    sb.append(this.getArticleNumber());
+    return sb.toString();
   }
 }
